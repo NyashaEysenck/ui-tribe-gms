@@ -3,31 +3,83 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Sidebar from "@/components/Sidebar";
+import RoleSidebar from "@/components/RoleSidebar";
+import { useAuth } from "@/context/AuthContext";
 
 type GrantCardProps = {
+  id: string;
   title: string;
   deadline: string;
   description: string;
   amount: string;
 };
 
-const GrantCard: React.FC<GrantCardProps> = ({ title, deadline, description, amount }) => (
+const GrantCard: React.FC<GrantCardProps> = ({ id, title, deadline, description, amount }) => (
   <Card className="h-full">
     <CardContent className="p-6">
       <h3 className="text-xl font-bold mb-1">{title}</h3>
       <p className="text-gray-500 text-sm mb-3">Deadline: {deadline}</p>
       <p className="text-gray-700 mb-4">{description}</p>
       <p className="text-red-600 font-bold text-xl mb-4">{amount}</p>
-      <Button className="w-full bg-red-600 hover:bg-red-700">Apply Now</Button>
+      <Link to={`/apply/${id}`}>
+        <Button className="w-full bg-red-600 hover:bg-red-700">Apply Now</Button>
+      </Link>
     </CardContent>
   </Card>
 );
 
 const OpportunitiesPage = () => {
+  const { user } = useAuth();
+  
+  // Mock grant opportunities data
+  const opportunities = [
+    {
+      id: "1",
+      title: "Climate Change Research Initiative",
+      deadline: "June 30, 2025",
+      description: "Research exploring innovative solutions to mitigate climate change effects in sub-Saharan Africa.",
+      amount: "$75,000",
+    },
+    {
+      id: "2",
+      title: "Healthcare Innovation Fund",
+      deadline: "July 15, 2025",
+      description: "Supporting research in healthcare delivery systems and medical technology advancements.",
+      amount: "$120,000",
+    },
+    {
+      id: "3",
+      title: "Agricultural Sustainability Grant",
+      deadline: "August 10, 2025",
+      description: "Funding research on sustainable agricultural practices and food security solutions.",
+      amount: "$90,000",
+    },
+    {
+      id: "4",
+      title: "Digital Education Access",
+      deadline: "September 5, 2025",
+      description: "Projects focused on improving digital education access in underserved communities.",
+      amount: "$65,000",
+    },
+    {
+      id: "5",
+      title: "Water Resource Management",
+      deadline: "July 31, 2025",
+      description: "Research on sustainable water management practices for urban and rural communities.",
+      amount: "$85,000",
+    },
+    {
+      id: "6",
+      title: "Cultural Heritage Preservation",
+      deadline: "October 15, 2025",
+      description: "Supporting projects that document and preserve cultural heritage across Africa.",
+      amount: "$50,000",
+    },
+  ];
+
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar userName="Nyasha Gandah" userRole="Researcher" />
+      <RoleSidebar />
 
       <main className="flex-1 overflow-y-auto">
         <div className="p-8">
@@ -63,104 +115,16 @@ const OpportunitiesPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <GrantCard
-              title="Climate Change Research Initiative"
-              deadline="June 30, 2024"
-              description="Research exploring innovative solutions to mitigate climate change effects in sub-Saharan Africa."
-              amount="$75,000"
-            />
-            <GrantCard
-              title="Healthcare Innovation Fund"
-              deadline="July 15, 2024"
-              description="Supporting research in healthcare delivery systems and medical technology advancements."
-              amount="$120,000"
-            />
-            <GrantCard
-              title="Agricultural Sustainability Grant"
-              deadline="August 10, 2024"
-              description="Funding research on sustainable agricultural practices and food security solutions."
-              amount="$90,000"
-            />
-            <GrantCard
-              title="Digital Education Access"
-              deadline="September 5, 2024"
-              description="Projects focused on improving digital education access in underserved communities."
-              amount="$65,000"
-            />
-            <GrantCard
-              title="Water Resource Management"
-              deadline="July 31, 2024"
-              description="Research on sustainable water management practices for urban and rural communities."
-              amount="$85,000"
-            />
-            <GrantCard
-              title="Cultural Heritage Preservation"
-              deadline="October 15, 2024"
-              description="Supporting projects that document and preserve cultural heritage across Africa."
-              amount="$50,000"
-            />
-            <GrantCard
-              title="Infectious Disease Research"
-              deadline="August 25, 2024"
-              description="Studies focused on prevention and treatment of infectious diseases prevalent in Africa."
-              amount="$130,000"
-            />
-            <GrantCard
-              title="Renewable Energy Development"
-              deadline="September 30, 2024"
-              description="Research on affordable and sustainable renewable energy solutions for African communities."
-              amount="$100,000"
-            />
-            <GrantCard
-              title="Women in STEM Fellowship"
-              deadline="July 20, 2024"
-              description="Supporting female researchers in science, technology, engineering, and mathematics fields."
-              amount="$45,000"
-            />
-          </div>
-
-          <div className="flex justify-center mt-8">
-            <nav className="inline-flex">
-              <a
-                href="#"
-                className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                Previous
-              </a>
-              <a
-                href="#"
-                className="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-red-600 hover:bg-red-50"
-              >
-                1
-              </a>
-              <a
-                href="#"
-                className="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                2
-              </a>
-              <a
-                href="#"
-                className="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                3
-              </a>
-              <span className="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-500">
-                ...
-              </span>
-              <a
-                href="#"
-                className="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                8
-              </a>
-              <a
-                href="#"
-                className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                Next
-              </a>
-            </nav>
+            {opportunities.map(opportunity => (
+              <GrantCard
+                key={opportunity.id}
+                id={opportunity.id}
+                title={opportunity.title}
+                deadline={opportunity.deadline}
+                description={opportunity.description}
+                amount={opportunity.amount}
+              />
+            ))}
           </div>
         </div>
       </main>
