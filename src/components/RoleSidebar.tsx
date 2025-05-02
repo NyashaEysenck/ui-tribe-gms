@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -73,12 +72,12 @@ const RoleSidebar = () => {
         label: "Manage Users"
       },
       {
-        to: "/notifications",
+        to: "/admin/notifications",
         icon: <Bell className="w-5 h-5" />,
         label: "Notifications"
       },
       {
-        to: "/settings",
+        to: "/admin/settings",
         icon: <Settings className="w-5 h-5" />,
         label: "Settings"
       }
@@ -97,12 +96,12 @@ const RoleSidebar = () => {
         label: "Applications"
       },
       {
-        to: "/notifications",
+        to: "/grant-office/notifications",
         icon: <Bell className="w-5 h-5" />,
         label: "Notifications"
       },
       {
-        to: "/settings",
+        to: "/grant-office/settings",
         icon: <Settings className="w-5 h-5" />,
         label: "Settings"
       }
@@ -132,12 +131,12 @@ const RoleSidebar = () => {
         label: "Calendar"
       },
       {
-        to: "/notifications",
+        to: "/researcher/notifications",
         icon: <Bell className="w-5 h-5" />,
         label: "Notifications"
       },
       {
-        to: "/settings",
+        to: "/researcher/settings",
         icon: <Settings className="w-5 h-5" />,
         label: "Settings"
       }

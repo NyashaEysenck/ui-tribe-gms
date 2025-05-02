@@ -9,3 +9,26 @@ export interface User {
   department?: string;
   position?: string;
 }
+
+export interface SectionStatus {
+  isComplete: boolean;
+  isValid: boolean;
+  errorMessage?: string;
+}
+
+export interface ApplicationSections {
+  basic: SectionStatus;
+  objectives: SectionStatus;
+  activities: SectionStatus;
+  outcomes: SectionStatus;
+  budget: SectionStatus;
+  students: SectionStatus;
+  references: SectionStatus;
+}
+
+export interface FormField {
+  value: string;
+  isRequired: boolean;
+  isValid: boolean;
+  errorMessage?: string;
+}

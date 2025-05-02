@@ -22,7 +22,40 @@ const NotificationsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
   // Mock notifications
-  const notifications: Notification[] = [];
+  const notifications: Notification[] = [
+    {
+      id: "1",
+      title: "New Grant Opportunity Posted",
+      message: "A new grant opportunity has been posted: Climate Change Research Initiative.",
+      date: "2025-05-02",
+      read: false,
+      type: "general"
+    },
+    {
+      id: "2",
+      title: "Application Status Update",
+      message: "Your application for Healthcare Innovation Fund has been approved.",
+      date: "2025-04-30",
+      read: true,
+      type: "application"
+    },
+    {
+      id: "3",
+      title: "Upcoming Deadline",
+      message: "Reminder: The deadline for the Climate Change Research Initiative is approaching (June 30, 2025).",
+      date: "2025-04-28",
+      read: false,
+      type: "deadline"
+    },
+    {
+      id: "4",
+      title: "Report Due Soon",
+      message: "Progress report for your Agricultural Innovation grant is due in 7 days.",
+      date: "2025-04-25",
+      read: false,
+      type: "report"
+    }
+  ];
   
   // Filter notifications based on active tab and search query
   const filteredNotifications = notifications.filter(notification => {
@@ -74,7 +107,7 @@ const NotificationsPage = () => {
           <Card>
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-2">Notifications</h2>
-              <p className="text-gray-500 text-sm mb-6">{notifications.length} notifications</p>
+              <p className="text-gray-500 text-sm mb-6">{filteredNotifications.length} notifications</p>
               
               {filteredNotifications.length > 0 ? (
                 <div className="space-y-4">

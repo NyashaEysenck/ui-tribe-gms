@@ -82,12 +82,12 @@ const App = () => (
                 <CalendarPage />
               </PrivateRoute>
             } />
-            <Route path="/notifications" element={
+            <Route path="/researcher/notifications" element={
               <PrivateRoute allowedRoles={["researcher"]}>
                 <NotificationsPage />
               </PrivateRoute>
             } />
-            <Route path="/settings" element={
+            <Route path="/researcher/settings" element={
               <PrivateRoute allowedRoles={["researcher"]}>
                 <SettingsPage />
               </PrivateRoute>
@@ -114,12 +114,12 @@ const App = () => (
                 <ApplicationDetailsPage />
               </PrivateRoute>
             } />
-            <Route path="/settings" element={
+            <Route path="/grant-office/settings" element={
               <PrivateRoute allowedRoles={["grant_office"]}>
                 <SettingsPage />
               </PrivateRoute>
             } />
-            <Route path="/notifications" element={
+            <Route path="/grant-office/notifications" element={
               <PrivateRoute allowedRoles={["grant_office"]}>
                 <NotificationsPage />
               </PrivateRoute>
@@ -136,12 +136,12 @@ const App = () => (
                 <ManageUsersPage />
               </PrivateRoute>
             } />
-            <Route path="/settings" element={
+            <Route path="/admin/settings" element={
               <PrivateRoute allowedRoles={["admin"]}>
                 <SettingsPage />
               </PrivateRoute>
             } />
-            <Route path="/notifications" element={
+            <Route path="/admin/notifications" element={
               <PrivateRoute allowedRoles={["admin"]}>
                 <NotificationsPage />
               </PrivateRoute>
