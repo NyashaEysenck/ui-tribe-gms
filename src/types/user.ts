@@ -1,4 +1,3 @@
-
 export type UserRole = "admin" | "grant_office" | "researcher";
 
 export interface User {
@@ -31,4 +30,17 @@ export interface FormField {
   isRequired: boolean;
   isValid: boolean;
   errorMessage?: string;
+}
+
+export interface ApplicationFormSection {
+  title: string;
+  description: string;
+  status: SectionStatus;
+}
+
+export interface ApplicationProgress {
+  currentSection: string;
+  completedSections: number;
+  totalSections: number;
+  percentComplete: number;
 }

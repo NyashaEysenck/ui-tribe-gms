@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,8 +9,11 @@ import RoleSidebar from "@/components/RoleSidebar";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
-import { ApplicationSections, FormField } from "@/types/user";
-import { AlertCircle } from "lucide-react";
+import { ApplicationSections, FormField, ApplicationProgress } from "@/types/user";
+import { AlertCircle, Save, CheckCircle, ArrowRight, ArrowLeft, AlertTriangle } from "lucide-react";
+import ApplicationSectionHeader from "@/components/ApplicationSectionHeader";
+import ApplicationProgressBar from "@/components/ApplicationProgressBar";
+import { cn } from "@/lib/utils";
 
 // Mock grant opportunity data
 const opportunities = [
@@ -109,6 +111,17 @@ const initialReferencesInfo = {
   bibliography: { value: "", isRequired: true, isValid: true, errorMessage: "" },
 };
 
+// Section help text
+const sectionHelpText = {
+  basic: "This section collects essential information about your research project, including the title, PI details, and a brief statement of purpose.",
+  objectives: "Clearly state your research objectives and provide a concise literature review to establish context for your work.",
+  activities: "Describe your research methodology and timeline for completing project activities.",
+  outcomes: "Explain the expected outcomes of your research and their significance.",
+  budget: "Provide a detailed budget breakdown and justify all expenses.",
+  students: "Describe how students will be involved in the research and what skills they will develop.",
+  references: "List all references in APA format."
+};
+
 const ApplicationFormPage = () => {
   const { opportunityId } = useParams<{ opportunityId: string }>();
   const navigate = useNavigate();
@@ -118,6 +131,7 @@ const ApplicationFormPage = () => {
   // State for each tab
   const [activeTab, setActiveTab] = useState("basic");
   const [isUserChangingTab, setIsUserChangingTab] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Form data for each section
   const [basicInfo, setBasicInfo] = useState({...initialBasicInfo, piName: { ...initialBasicInfo.piName, value: user?.name || "" }});
@@ -140,10 +154,29 @@ const ApplicationFormPage = () => {
   });
 
   // Progress calculation
-  const calculateProgress = () => {
+  const calculateProgress = (): ApplicationProgress => {
     const sections = Object.values(sectionStatus);
     const completedSections = sections.filter(section => section.isComplete).length;
-    return (completedSections / sections.length) * 100;
+    return {
+      currentSection: activeTab,
+      completedSections: completedSections,
+      totalSections: sections.length,
+      percentComplete: (completedSections / sections.length) * 100
+    };
+  };
+
+  // Auto-save functionality
+  const autoSave = () => {
+    setIsSaving(true);
+    
+    // Simulate saving to server
+    setTimeout(() => {
+      setIsSaving(false);
+      toast({
+        title: "Progress saved",
+        description: "Your application progress has been saved",
+      });
+    }, 1000);
   };
 
   // Validate basic info section
@@ -557,6 +590,7 @@ const ApplicationFormPage = () => {
     
     if (canAccessTab) {
       setActiveTab(value);
+      autoSave(); // Auto-save when changing tabs
     } else {
       // Show toast if user tries to access a tab they can't
       toast({
@@ -629,7 +663,7 @@ const ApplicationFormPage = () => {
         
         // Redirect back to dashboard
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/my-grants");
         }, 1500);
       }
     }
@@ -640,6 +674,8 @@ const ApplicationFormPage = () => {
         description: "Please fill in all required fields",
         variant: "destructive",
       });
+    } else {
+      autoSave();
     }
   };
 
@@ -657,6 +693,12 @@ const ApplicationFormPage = () => {
     } else if (activeTab === "references") {
       setActiveTab("students");
     }
+    
+    autoSave();
+  };
+
+  const handleSaveProgress = () => {
+    autoSave();
   };
 
   const renderFieldError = (field: FormField) => {
@@ -700,6 +742,8 @@ const ApplicationFormPage = () => {
     );
   }
 
+  const progress = calculateProgress();
+
   return (
     <div className="flex h-screen bg-gray-50">
       <RoleSidebar />
@@ -709,72 +753,147 @@ const ApplicationFormPage = () => {
           <Card>
             <CardContent className="p-6">
               <div className="mb-6">
-                <h1 className="text-2xl font-bold">AU Grant Application Form</h1>
-                <p className="text-gray-600">Complete all sections to submit your grant application</p>
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h1 className="text-2xl font-bold">AU Grant Application Form</h1>
+                    <p className="text-gray-600">
+                      Applying for: <span className="font-medium">{opportunity.title}</span> - <span className="text-red-600">{opportunity.amount}</span>
+                    </p>
+                    <p className="text-sm text-gray-500">Deadline: {opportunity.deadline}</p>
+                  </div>
+                  <Button 
+                    onClick={handleSaveProgress} 
+                    variant="outline"
+                    disabled={isSaving}
+                    className="flex items-center space-x-1"
+                  >
+                    {isSaving ? (
+                      <>Saving...</>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-1" />
+                        Save Progress
+                      </>
+                    )}
+                  </Button>
+                </div>
                 
                 {/* Progress bar */}
-                <div className="w-full mt-4 bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-red-600 h-2.5 rounded-full" 
-                    style={{ width: `${calculateProgress()}%` }}
-                  ></div>
-                </div>
+                <ApplicationProgressBar progress={progress} />
                 
                 {/* Tab navigation */}
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-6">
                   <TabsList className="grid grid-cols-7 w-full">
-                    <TabsTrigger value="basic">Basic</TabsTrigger>
+                    <TabsTrigger 
+                      value="basic"
+                      className="relative"
+                      aria-label="Basic Information Section"
+                    >
+                      Basic
+                      {sectionStatus.basic.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
+                    </TabsTrigger>
                     <TabsTrigger 
                       value="objectives" 
                       disabled={!canAccessSection("objectives")}
-                      className={!canAccessSection("objectives") ? "opacity-50 cursor-not-allowed" : ""}
+                      className={cn(
+                        "relative",
+                        !canAccessSection("objectives") ? "opacity-50 cursor-not-allowed" : ""
+                      )}
+                      aria-label="Objectives and Literature Section"
                     >
-                      Objectives/Literature
+                      Objectives
+                      {sectionStatus.objectives.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="activities" 
                       disabled={!canAccessSection("activities")}
-                      className={!canAccessSection("activities") ? "opacity-50 cursor-not-allowed" : ""}
+                      className={cn(
+                        "relative",
+                        !canAccessSection("activities") ? "opacity-50 cursor-not-allowed" : ""
+                      )}
+                      aria-label="Activities Section"
                     >
                       Activities
+                      {sectionStatus.activities.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="outcomes" 
                       disabled={!canAccessSection("outcomes")}
-                      className={!canAccessSection("outcomes") ? "opacity-50 cursor-not-allowed" : ""}
+                      className={cn(
+                        "relative",
+                        !canAccessSection("outcomes") ? "opacity-50 cursor-not-allowed" : ""
+                      )}
+                      aria-label="Outcomes Section"
                     >
                       Outcomes
+                      {sectionStatus.outcomes.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="budget" 
                       disabled={!canAccessSection("budget")}
-                      className={!canAccessSection("budget") ? "opacity-50 cursor-not-allowed" : ""}
+                      className={cn(
+                        "relative",
+                        !canAccessSection("budget") ? "opacity-50 cursor-not-allowed" : ""
+                      )}
+                      aria-label="Budget Section"
                     >
                       Budget
+                      {sectionStatus.budget.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="students" 
                       disabled={!canAccessSection("students")}
-                      className={!canAccessSection("students") ? "opacity-50 cursor-not-allowed" : ""}
+                      className={cn(
+                        "relative",
+                        !canAccessSection("students") ? "opacity-50 cursor-not-allowed" : ""
+                      )}
+                      aria-label="Students Work Plan Section"
                     >
-                      Students Work Plan
+                      Students
+                      {sectionStatus.students.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="references" 
                       disabled={!canAccessSection("references")}
-                      className={!canAccessSection("references") ? "opacity-50 cursor-not-allowed" : ""}
+                      className={cn(
+                        "relative",
+                        !canAccessSection("references") ? "opacity-50 cursor-not-allowed" : ""
+                      )}
+                      aria-label="References Section"
                     >
                       References
+                      {sectionStatus.references.isComplete && (
+                        <CheckCircle className="absolute -top-1 -right-1 h-3 w-3 text-green-500" />
+                      )}
                     </TabsTrigger>
                   </TabsList>
                 
                   {/* Basic information tab */}
-                  <TabsContent value="basic" className="mt-6">
+                  <TabsContent value="basic" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="Basic Information" 
+                      description="Enter essential information about your research project"
+                      isComplete={sectionStatus.basic.isComplete}
+                      helpText={sectionHelpText.basic}
+                    />
+                    
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="studyTitle" className="block text-sm font-medium text-gray-700 mb-1">
-                            Study Title
+                            Study Title <span className="text-red-600">*</span>
                           </label>
                           <Input
                             id="studyTitle"
@@ -784,13 +903,14 @@ const ApplicationFormPage = () => {
                             placeholder="Enter the title of your research project"
                             className={`w-full ${!basicInfo.studyTitle.isValid ? 'border-red-500' : ''}`}
                             required
+                            aria-describedby="studyTitleError"
                           />
                           {renderFieldError(basicInfo.studyTitle)}
                         </div>
                         
                         <div>
                           <label htmlFor="piName" className="block text-sm font-medium text-gray-700 mb-1">
-                            Principal Investigator (PI) Name
+                            Principal Investigator (PI) Name <span className="text-red-600">*</span>
                           </label>
                           <Input
                             id="piName"
@@ -808,7 +928,7 @@ const ApplicationFormPage = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="college" className="block text-sm font-medium text-gray-700 mb-1">
-                            College Name
+                            College Name <span className="text-red-600">*</span>
                           </label>
                           <Select 
                             value={basicInfo.college.value} 
@@ -830,7 +950,7 @@ const ApplicationFormPage = () => {
                         
                         <div>
                           <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
-                            Year of Application
+                            Year of Application <span className="text-red-600">*</span>
                           </label>
                           <Select 
                             value={basicInfo.year.value} 
@@ -850,7 +970,7 @@ const ApplicationFormPage = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="grantCategory" className="block text-sm font-medium text-gray-700 mb-1">
-                            Grant Category
+                            Grant Category <span className="text-red-600">*</span>
                           </label>
                           <Select 
                             value={basicInfo.grantCategory.value} 
@@ -871,7 +991,7 @@ const ApplicationFormPage = () => {
                         
                         <div>
                           <label htmlFor="fundingSource" className="block text-sm font-medium text-gray-700 mb-1">
-                            Funding Source
+                            Funding Source <span className="text-red-600">*</span>
                           </label>
                           <Select 
                             value={basicInfo.fundingSource.value} 
@@ -893,7 +1013,7 @@ const ApplicationFormPage = () => {
                       
                       <div>
                         <label htmlFor="statementOfPurpose" className="block text-sm font-medium text-gray-700 mb-1">
-                          Statement of Purpose (2 sentences max)
+                          Statement of Purpose (2 sentences max) <span className="text-red-600">*</span>
                         </label>
                         <Textarea
                           id="statementOfPurpose"
@@ -909,7 +1029,7 @@ const ApplicationFormPage = () => {
                       
                       <div>
                         <label htmlFor="background" className="block text-sm font-medium text-gray-700 mb-1">
-                          Background (1 page max)
+                          Background (1 page max) <span className="text-red-600">*</span>
                         </label>
                         <Textarea
                           id="background"
@@ -926,12 +1046,17 @@ const ApplicationFormPage = () => {
                   </TabsContent>
                   
                   {/* Objectives tab */}
-                  <TabsContent value="objectives" className="mt-6">
+                  <TabsContent value="objectives" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="Research Objectives & Literature Review" 
+                      description="Define your research objectives and summarize relevant literature"
+                      isComplete={sectionStatus.objectives.isComplete}
+                      helpText={sectionHelpText.objectives}
+                    />
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium">Research Objectives & Literature Review</h3>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Objectives (List up to 3 main objectives)
+                          Objectives (List up to 3 main objectives) <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="objectives"
@@ -945,7 +1070,7 @@ const ApplicationFormPage = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Literature Review Summary
+                          Literature Review Summary <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="literatureReview"
@@ -962,12 +1087,17 @@ const ApplicationFormPage = () => {
                   </TabsContent>
                   
                   {/* Activities tab */}
-                  <TabsContent value="activities" className="mt-6">
+                  <TabsContent value="activities" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="Research Activities" 
+                      description="Describe your methodology and project timeline"
+                      isComplete={sectionStatus.activities.isComplete}
+                      helpText={sectionHelpText.activities}
+                    />
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium">Research Activities</h3>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Methodology
+                          Methodology <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="methodology"
@@ -981,7 +1111,7 @@ const ApplicationFormPage = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Timeline of Activities
+                          Timeline of Activities <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="timeline"
@@ -997,12 +1127,17 @@ const ApplicationFormPage = () => {
                   </TabsContent>
                   
                   {/* Outcomes tab */}
-                  <TabsContent value="outcomes" className="mt-6">
+                  <TabsContent value="outcomes" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="Expected Outcomes" 
+                      description="Describe anticipated research outcomes and their significance"
+                      isComplete={sectionStatus.outcomes.isComplete}
+                      helpText={sectionHelpText.outcomes}
+                    />
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium">Expected Outcomes</h3>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Research Outcomes
+                          Research Outcomes <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="researchOutcomes"
@@ -1016,7 +1151,7 @@ const ApplicationFormPage = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Impact and Significance
+                          Impact and Significance <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="impact"
@@ -1032,12 +1167,17 @@ const ApplicationFormPage = () => {
                   </TabsContent>
                   
                   {/* Budget tab */}
-                  <TabsContent value="budget" className="mt-6">
+                  <TabsContent value="budget" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="Budget" 
+                      description="Provide a detailed budget breakdown and justification"
+                      isComplete={sectionStatus.budget.isComplete}
+                      helpText={sectionHelpText.budget}
+                    />
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium">Budget</h3>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Budget Summary
+                          Budget Summary <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="budgetSummary"
@@ -1051,7 +1191,7 @@ const ApplicationFormPage = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Budget Justification
+                          Budget Justification <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="budgetJustification"
@@ -1067,12 +1207,17 @@ const ApplicationFormPage = () => {
                   </TabsContent>
                   
                   {/* Students tab */}
-                  <TabsContent value="students" className="mt-6">
+                  <TabsContent value="students" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="Students Work Plan" 
+                      description="Describe how students will be involved and what they will learn"
+                      isComplete={sectionStatus.students.isComplete}
+                      helpText={sectionHelpText.students}
+                    />
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium">Students Work Plan</h3>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Student Involvement
+                          Student Involvement <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="studentInvolvement"
@@ -1086,7 +1231,7 @@ const ApplicationFormPage = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Student Learning Outcomes
+                          Student Learning Outcomes <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="studentLearningOutcomes"
@@ -1102,12 +1247,17 @@ const ApplicationFormPage = () => {
                   </TabsContent>
                   
                   {/* References tab */}
-                  <TabsContent value="references" className="mt-6">
+                  <TabsContent value="references" className="mt-6 border rounded-lg p-4 shadow-sm">
+                    <ApplicationSectionHeader 
+                      title="References" 
+                      description="List all references using APA format"
+                      isComplete={sectionStatus.references.isComplete}
+                      helpText={sectionHelpText.references}
+                    />
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium">References</h3>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Bibliography
+                          Bibliography <span className="text-red-600">*</span>
                         </label>
                         <Textarea 
                           id="bibliography"
@@ -1125,22 +1275,46 @@ const ApplicationFormPage = () => {
                 
                 {/* Navigation buttons */}
                 <div className="flex justify-between mt-8">
-                  {activeTab !== "basic" && (
-                    <Button type="button" variant="outline" onClick={handlePrevious}>
-                      Previous
+                  {activeTab !== "basic" ? (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={handlePrevious}
+                      className="flex items-center"
+                    >
+                      <ArrowLeft className="mr-1 h-4 w-4" /> Previous
                     </Button>
-                  )}
-                  {activeTab === "basic" && (
-                    <Button type="button" variant="outline" onClick={() => navigate("/opportunities")}>
+                  ) : (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => navigate("/opportunities")}
+                      className="flex items-center"
+                    >
                       Cancel
                     </Button>
                   )}
+                  
+                  {/* Section status indicator */}
+                  <div className="flex items-center">
+                    {!sectionStatus[activeTab as keyof ApplicationSections].isComplete && (
+                      <div className="flex items-center text-amber-500 text-sm mr-4">
+                        <AlertTriangle className="h-4 w-4 mr-1" />
+                        <span>Section incomplete</span>
+                      </div>
+                    )}
+                  </div>
+                  
                   <Button 
                     type="button" 
-                    className="bg-red-600 hover:bg-red-700"
+                    className="bg-red-600 hover:bg-red-700 flex items-center"
                     onClick={handleNext}
                   >
-                    {activeTab === "references" ? "Submit Application" : "Next"}
+                    {activeTab === "references" ? "Submit Application" : (
+                      <>
+                        Next <ArrowRight className="ml-1 h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
