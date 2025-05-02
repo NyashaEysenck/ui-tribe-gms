@@ -3,7 +3,21 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
-import { LogOut, User, Users, Home, FileText, Search, Calendar, Mail, Settings, FilePlus, BarChart2, Briefcase } from "lucide-react";
+import { 
+  LogOut, 
+  User, 
+  Users, 
+  Home, 
+  FileText, 
+  Search, 
+  Calendar, 
+  Bell, 
+  Settings, 
+  FilePlus, 
+  BarChart2, 
+  Briefcase,
+  FileCheck
+} from "lucide-react";
 
 type SidebarItemProps = {
   icon: React.ReactNode;
@@ -51,12 +65,22 @@ const RoleSidebar = () => {
       {
         to: "/applications",
         icon: <FileText className="w-5 h-5" />,
-        label: "All Applications"
+        label: "Applications"
       },
       {
         to: "/manage-users",
         icon: <Users className="w-5 h-5" />,
         label: "Manage Users"
+      },
+      {
+        to: "/notifications",
+        icon: <Bell className="w-5 h-5" />,
+        label: "Notifications"
+      },
+      {
+        to: "/settings",
+        icon: <Settings className="w-5 h-5" />,
+        label: "Settings"
       }
     ];
   } else if (user.role === "grant_office") {
@@ -70,7 +94,17 @@ const RoleSidebar = () => {
       {
         to: "/applications",
         icon: <FileText className="w-5 h-5" />,
-        label: "Review Applications"
+        label: "Applications"
+      },
+      {
+        to: "/notifications",
+        icon: <Bell className="w-5 h-5" />,
+        label: "Notifications"
+      },
+      {
+        to: "/settings",
+        icon: <Settings className="w-5 h-5" />,
+        label: "Settings"
       }
     ];
   } else {
@@ -78,9 +112,34 @@ const RoleSidebar = () => {
     menuItems = [
       ...menuItems,
       {
+        to: "/my-grants",
+        icon: <FileCheck className="w-5 h-5" />,
+        label: "My Grants"
+      },
+      {
         to: "/opportunities",
         icon: <Search className="w-5 h-5" />,
         label: "Find Opportunities"
+      },
+      {
+        to: "/reports",
+        icon: <FileText className="w-5 h-5" />,
+        label: "Reports"
+      },
+      {
+        to: "/calendar",
+        icon: <Calendar className="w-5 h-5" />,
+        label: "Calendar"
+      },
+      {
+        to: "/notifications",
+        icon: <Bell className="w-5 h-5" />,
+        label: "Notifications"
+      },
+      {
+        to: "/settings",
+        icon: <Settings className="w-5 h-5" />,
+        label: "Settings"
       }
     ];
   }

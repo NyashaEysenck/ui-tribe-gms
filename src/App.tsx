@@ -21,6 +21,12 @@ import ApplicationFormPage from "./pages/ApplicationFormPage";
 import ApplicationsListPage from "./pages/ApplicationsListPage";
 import ApplicationDetailsPage from "./pages/ApplicationDetailsPage";
 import ManageUsersPage from "./pages/ManageUsersPage";
+import MyGrantsPage from "./pages/MyGrantsPage";
+import ReportsPage from "./pages/ReportsPage";
+import NewReportPage from "./pages/NewReportPage";
+import CalendarPage from "./pages/CalendarPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import SettingsPage from "./pages/SettingsPage";
 
 // Import Auth Provider and Private Route
 import { AuthProvider } from "./context/AuthContext";
@@ -56,6 +62,36 @@ const App = () => (
                 <ApplicationFormPage />
               </PrivateRoute>
             } />
+            <Route path="/my-grants" element={
+              <PrivateRoute allowedRoles={["researcher"]}>
+                <MyGrantsPage />
+              </PrivateRoute>
+            } />
+            <Route path="/reports" element={
+              <PrivateRoute allowedRoles={["researcher"]}>
+                <ReportsPage />
+              </PrivateRoute>
+            } />
+            <Route path="/reports/new" element={
+              <PrivateRoute allowedRoles={["researcher"]}>
+                <NewReportPage />
+              </PrivateRoute>
+            } />
+            <Route path="/calendar" element={
+              <PrivateRoute allowedRoles={["researcher"]}>
+                <CalendarPage />
+              </PrivateRoute>
+            } />
+            <Route path="/notifications" element={
+              <PrivateRoute allowedRoles={["researcher"]}>
+                <NotificationsPage />
+              </PrivateRoute>
+            } />
+            <Route path="/settings" element={
+              <PrivateRoute allowedRoles={["researcher"]}>
+                <SettingsPage />
+              </PrivateRoute>
+            } />
             
             {/* Grant Office Routes */}
             <Route path="/grant-office" element={
@@ -78,6 +114,16 @@ const App = () => (
                 <ApplicationDetailsPage />
               </PrivateRoute>
             } />
+            <Route path="/settings" element={
+              <PrivateRoute allowedRoles={["grant_office"]}>
+                <SettingsPage />
+              </PrivateRoute>
+            } />
+            <Route path="/notifications" element={
+              <PrivateRoute allowedRoles={["grant_office"]}>
+                <NotificationsPage />
+              </PrivateRoute>
+            } />
             
             {/* Admin Routes */}
             <Route path="/admin" element={
@@ -88,6 +134,16 @@ const App = () => (
             <Route path="/manage-users" element={
               <PrivateRoute allowedRoles={["admin"]}>
                 <ManageUsersPage />
+              </PrivateRoute>
+            } />
+            <Route path="/settings" element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <SettingsPage />
+              </PrivateRoute>
+            } />
+            <Route path="/notifications" element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <NotificationsPage />
               </PrivateRoute>
             } />
             
