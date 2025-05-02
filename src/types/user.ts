@@ -1,3 +1,4 @@
+
 export type UserRole = "admin" | "grant_office" | "researcher";
 
 export interface User {
@@ -43,4 +44,20 @@ export interface ApplicationProgress {
   completedSections: number;
   totalSections: number;
   percentComplete: number;
+}
+
+export interface GrantOpportunity {
+  id: string;
+  title: string;
+  deadline: string;
+  description: string;
+  amount: string;
+}
+
+export interface FormSectionProps {
+  section: string;
+  title: string;
+  description: string;
+  status: SectionStatus;
+  helpText?: string;
 }
