@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import RoleSidebar from "@/components/RoleSidebar";
-import { ApplicationFormProvider, useApplicationForm } from "@/context/application-form";
+import { ApplicationFormProvider, useApplicationForm } from "@/context/ApplicationFormContext";
 import ApplicationProgressBar from "@/components/ApplicationProgressBar";
 
 // Import form components

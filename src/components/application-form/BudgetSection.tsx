@@ -2,7 +2,8 @@
 import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import ApplicationSectionHeader from "@/components/ApplicationSectionHeader";
-import { useApplicationForm, sectionHelpText } from "@/context/application-form";
+import { useApplicationForm } from "@/context/ApplicationFormContext";
+import { sectionHelpText } from "@/context/ApplicationFormContext";
 
 const BudgetSection: React.FC = () => {
   const { 
