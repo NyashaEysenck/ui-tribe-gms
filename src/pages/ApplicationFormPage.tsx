@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,22 +21,6 @@ import BudgetSection from "@/components/application-form/BudgetSection";
 import StudentsSection from "@/components/application-form/StudentsSection";
 import ReferencesSection from "@/components/application-form/ReferencesSection";
 
-const PrefillButton = () => {
-  const { prefillDemoData } = useApplicationForm();
-  
-  return (
-    <div className="absolute top-4 right-4">
-      <Button 
-        onClick={prefillDemoData} 
-        size="sm" 
-        variant="outline"
-      >
-        Load Demo Data
-      </Button>
-    </div>
-  );
-};
-
 const ApplicationFormContent = () => {
   const { calculateProgress } = useApplicationForm();
   const progress = calculateProgress();
@@ -45,10 +29,9 @@ const ApplicationFormContent = () => {
     <div className="p-8 relative">
       <Card>
         <CardContent className="p-6">
-          <PrefillButton />
           <ApplicationFormHeader />
           
-          {/* Add progress bar */}
+          {/* Progress bar */}
           <div className="mb-6">
             <ApplicationProgressBar progress={progress} />
           </div>

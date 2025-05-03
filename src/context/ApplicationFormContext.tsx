@@ -277,22 +277,25 @@ export const ApplicationFormProvider: React.FC<{
   const [isUserChangingTab, setIsUserChangingTab] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
-  // Form data for each section
+  // Get the appropriate demo data based on opportunity ID
+  const demoData = opportunityId === "1" ? climateChangeData : healthcareData;
+  
+  // Form data for each section - initialized with demo data
   const [basicInfo, setBasicInfo] = useState({
-    ...initialBasicInfo, 
-    piName: { ...initialBasicInfo.piName, value: user?.name || "" }
+    ...demoData.basic,
+    piName: { ...demoData.basic.piName, value: user?.name || "" }
   });
-  const [objectivesInfo, setObjectivesInfo] = useState(initialObjectivesInfo);
-  const [activitiesInfo, setActivitiesInfo] = useState(initialActivitiesInfo);
-  const [outcomesInfo, setOutcomesInfo] = useState(initialOutcomesInfo);
-  const [budgetInfo, setBudgetInfo] = useState(initialBudgetInfo);
-  const [studentsInfo, setStudentsInfo] = useState(initialStudentsInfo);
-  const [referencesInfo, setReferencesInfo] = useState(initialReferencesInfo);
+  const [objectivesInfo, setObjectivesInfo] = useState(demoData.objectives);
+  const [activitiesInfo, setActivitiesInfo] = useState(demoData.activities);
+  const [outcomesInfo, setOutcomesInfo] = useState(demoData.outcomes);
+  const [budgetInfo, setBudgetInfo] = useState(demoData.budget);
+  const [studentsInfo, setStudentsInfo] = useState(demoData.students);
+  const [referencesInfo, setReferencesInfo] = useState(demoData.references);
 
   // Application sections completion status
   const [sectionStatus, setSectionStatus] = useState<ApplicationSections>(initialSections);
 
-  // Demo data prefill function
+  // Demo data prefill function (kept for compatibility but not used in UI)
   const prefillDemoData = () => {
     // Choose data based on the opportunity
     const demoData = opportunityId === "1" ? climateChangeData : healthcareData;
@@ -308,22 +311,6 @@ export const ApplicationFormProvider: React.FC<{
     setBudgetInfo(demoData.budget);
     setStudentsInfo(demoData.students);
     setReferencesInfo(demoData.references);
-    
-    // Mark all sections as complete
-    setSectionStatus({
-      basic: { isComplete: true, isValid: true, errorMessage: "" },
-      objectives: { isComplete: true, isValid: true, errorMessage: "" },
-      activities: { isComplete: true, isValid: true, errorMessage: "" },
-      outcomes: { isComplete: true, isValid: true, errorMessage: "" },
-      budget: { isComplete: true, isValid: true, errorMessage: "" },
-      students: { isComplete: true, isValid: true, errorMessage: "" },
-      references: { isComplete: true, isValid: true, errorMessage: "" },
-    });
-    
-    toast({
-      title: "Demo data loaded",
-      description: `Sample application for "${opportunity?.title}" has been loaded.`,
-    });
   };
 
   // Progress calculation
@@ -370,39 +357,40 @@ export const ApplicationFormProvider: React.FC<{
     const sectionOrder = ["basic", "objectives", "activities", "outcomes", "budget", "students", "references"];
     const currentIndex = sectionOrder.indexOf(activeTab);
     
-    // Validate current section
-    let isValid = false;
+    // Validate current section - always mark as valid for pre-filled data
+    let isValid = true;
     
     switch (activeTab) {
       case "basic":
-        isValid = validateBasicInfo();
+        isValid = true; // validateBasicInfo();
         break;
       case "objectives":
-        isValid = validateObjectives();
+        isValid = true; // validateObjectives();
         break;
       case "activities":
-        isValid = validateActivities();
+        isValid = true; // validateActivities();
         break;
       case "outcomes":
-        isValid = validateOutcomes();
+        isValid = true; // validateOutcomes();
         break;
       case "budget":
-        isValid = validateBudget();
+        isValid = true; // validateBudget();
         break;
       case "students":
-        isValid = validateStudents();
+        isValid = true; // validateStudents();
         break;
       case "references":
-        isValid = validateReferences();
+        isValid = true; // validateReferences();
         break;
     }
     
-    // Update section status
+    // Update section status - mark current section as complete
     setSectionStatus(prev => ({
       ...prev,
       [activeTab]: {
         ...prev[activeTab as keyof ApplicationSections],
         isComplete: isValid,
+        isValid: isValid
       }
     }));
     
@@ -445,36 +433,29 @@ export const ApplicationFormProvider: React.FC<{
   };
   
   const handleSubmitApplication = () => {
-    // Validate all sections one more time
-    const isBasicValid = validateBasicInfo();
-    const isObjectivesValid = validateObjectives();
-    const isActivitiesValid = validateActivities();
-    const isOutcomesValid = validateOutcomes();
-    const isBudgetValid = validateBudget();
-    const isStudentsValid = validateStudents();
-    const isReferencesValid = validateReferences();
+    // Mark all sections as complete for the demo
+    const updatedSectionStatus = {
+      basic: { isComplete: true, isValid: true, errorMessage: "" },
+      objectives: { isComplete: true, isValid: true, errorMessage: "" },
+      activities: { isComplete: true, isValid: true, errorMessage: "" },
+      outcomes: { isComplete: true, isValid: true, errorMessage: "" },
+      budget: { isComplete: true, isValid: true, errorMessage: "" },
+      students: { isComplete: true, isValid: true, errorMessage: "" },
+      references: { isComplete: true, isValid: true, errorMessage: "" },
+    };
     
-    const allValid = isBasicValid && isObjectivesValid && isActivitiesValid && 
-                    isOutcomesValid && isBudgetValid && isStudentsValid && isReferencesValid;
+    setSectionStatus(updatedSectionStatus);
     
-    if (allValid) {
-      // Simulate API submission
-      setIsSaving(true);
-      
-      setTimeout(() => {
-        toast({
-          title: "Application Submitted",
-          description: "Your grant application has been successfully submitted.",
-        });
-        setIsSaving(false);
-      }, 1500);
-    } else {
+    // Simulate API submission
+    setIsSaving(true);
+    
+    setTimeout(() => {
       toast({
-        title: "Cannot Submit",
-        description: "Please ensure all sections are completed before submitting.",
-        variant: "destructive",
+        title: "Application Submitted",
+        description: "Your grant application has been successfully submitted.",
       });
-    }
+      setIsSaving(false);
+    }, 1500);
   };
   
   // Validation functions

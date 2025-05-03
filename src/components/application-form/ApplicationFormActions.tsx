@@ -13,7 +13,8 @@ const ApplicationFormActions: React.FC = () => {
     handlePrevious, 
     handleNext, 
     sectionStatus,
-    opportunityId
+    opportunityId,
+    isSaving
   } = useApplicationForm();
 
   const isLastSection = activeTab === "references";
@@ -45,7 +46,12 @@ const ApplicationFormActions: React.FC = () => {
         {!sectionStatus[activeTab as keyof ApplicationSections].isComplete && (
           <div className="flex items-center text-amber-500 text-sm mr-4">
             <AlertTriangle className="h-4 w-4 mr-1" />
-            <span>Section incomplete</span>
+            <span>Click Next to complete this section</span>
+          </div>
+        )}
+        {sectionStatus[activeTab as keyof ApplicationSections].isComplete && (
+          <div className="flex items-center text-green-500 text-sm mr-4">
+            <span>Section complete</span>
           </div>
         )}
       </div>
@@ -54,8 +60,11 @@ const ApplicationFormActions: React.FC = () => {
         type="button" 
         className="bg-red-600 hover:bg-red-700 flex items-center"
         onClick={handleNext}
+        disabled={isSaving}
       >
-        {isLastSection ? "Submit Application" : (
+        {isLastSection ? (
+          isSaving ? "Submitting..." : "Submit Application"
+        ) : (
           <>
             Next <ArrowRight className="ml-1 h-4 w-4" />
           </>
