@@ -5,8 +5,7 @@ import {
   ApplicationSections, 
   FormField, 
   ApplicationProgress,
-  User,
-  PrefillData
+  User
 } from "@/types/user";
 
 // Initial section status
@@ -65,15 +64,6 @@ export const sectionHelpText = {
   budget: "Provide a detailed budget breakdown and justify all expenses.",
   students: "Describe how students will be involved in the research and what skills they will develop.",
   references: "List all references in APA format."
-};
-
-// Function to apply prefill data to a form field
-const applyPrefillToField = (field: FormField, value?: string): FormField => {
-  if (!value) return field;
-  return {
-    ...field,
-    value,
-  };
 };
 
 // Initial form data
@@ -176,10 +166,6 @@ interface ApplicationFormContextValue {
   isSaving: boolean;
   opportunityId?: string;
   opportunity: any;
-  
-  // Prefill functionality
-  prefillData?: PrefillData;
-  loadPrefillData: (data: PrefillData) => void;
 }
 
 const ApplicationFormContext = createContext<ApplicationFormContextValue | undefined>(undefined);
@@ -188,8 +174,7 @@ export const ApplicationFormProvider: React.FC<{
   children: React.ReactNode;
   user: User | null;
   opportunityId?: string;
-  prefillData?: PrefillData;
-}> = ({ children, user, opportunityId, prefillData }) => {
+}> = ({ children, user, opportunityId }) => {
   // Mock grant opportunity data - in a real app this would come from an API
   const opportunities = [
     {
@@ -215,152 +200,19 @@ export const ApplicationFormProvider: React.FC<{
   const [isUserChangingTab, setIsUserChangingTab] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
-  // Form data for each section with prefill data applied
-  const [basicInfo, setBasicInfo] = useState(() => {
-    const base = {
-      ...initialBasicInfo,
-      piName: { ...initialBasicInfo.piName, value: user?.name || "" }
-    };
-    
-    if (prefillData?.basic) {
-      return {
-        studyTitle: applyPrefillToField(base.studyTitle, prefillData.basic.studyTitle),
-        piName: applyPrefillToField(base.piName, prefillData.basic.piName),
-        college: applyPrefillToField(base.college, prefillData.basic.college),
-        year: applyPrefillToField(base.year, prefillData.basic.year),
-        grantCategory: applyPrefillToField(base.grantCategory, prefillData.basic.grantCategory),
-        fundingSource: applyPrefillToField(base.fundingSource, prefillData.basic.fundingSource),
-        statementOfPurpose: applyPrefillToField(base.statementOfPurpose, prefillData.basic.statementOfPurpose),
-        background: applyPrefillToField(base.background, prefillData.basic.background),
-      };
-    }
-    
-    return base;
+  // Form data for each section
+  const [basicInfo, setBasicInfo] = useState({
+    ...initialBasicInfo, 
+    piName: { ...initialBasicInfo.piName, value: user?.name || "" }
   });
-  
-  const [objectivesInfo, setObjectivesInfo] = useState(() => {
-    if (prefillData?.objectives) {
-      return {
-        objectives: applyPrefillToField(initialObjectivesInfo.objectives, prefillData.objectives.objectives),
-        literatureReview: applyPrefillToField(initialObjectivesInfo.literatureReview, prefillData.objectives.literatureReview),
-      };
-    }
-    return initialObjectivesInfo;
-  });
-  
-  const [activitiesInfo, setActivitiesInfo] = useState(() => {
-    if (prefillData?.activities) {
-      return {
-        methodology: applyPrefillToField(initialActivitiesInfo.methodology, prefillData.activities.methodology),
-        timeline: applyPrefillToField(initialActivitiesInfo.timeline, prefillData.activities.timeline),
-      };
-    }
-    return initialActivitiesInfo;
-  });
-  
-  const [outcomesInfo, setOutcomesInfo] = useState(() => {
-    if (prefillData?.outcomes) {
-      return {
-        researchOutcomes: applyPrefillToField(initialOutcomesInfo.researchOutcomes, prefillData.outcomes.researchOutcomes),
-        impact: applyPrefillToField(initialOutcomesInfo.impact, prefillData.outcomes.impact),
-      };
-    }
-    return initialOutcomesInfo;
-  });
-  
-  const [budgetInfo, setBudgetInfo] = useState(() => {
-    if (prefillData?.budget) {
-      return {
-        budgetSummary: applyPrefillToField(initialBudgetInfo.budgetSummary, prefillData.budget.budgetSummary),
-        budgetJustification: applyPrefillToField(initialBudgetInfo.budgetJustification, prefillData.budget.budgetJustification),
-      };
-    }
-    return initialBudgetInfo;
-  });
-  
-  const [studentsInfo, setStudentsInfo] = useState(() => {
-    if (prefillData?.students) {
-      return {
-        studentInvolvement: applyPrefillToField(initialStudentsInfo.studentInvolvement, prefillData.students.studentInvolvement),
-        studentLearningOutcomes: applyPrefillToField(initialStudentsInfo.studentLearningOutcomes, prefillData.students.studentLearningOutcomes),
-      };
-    }
-    return initialStudentsInfo;
-  });
-  
-  const [referencesInfo, setReferencesInfo] = useState(() => {
-    if (prefillData?.references) {
-      return {
-        bibliography: applyPrefillToField(initialReferencesInfo.bibliography, prefillData.references.bibliography),
-      };
-    }
-    return initialReferencesInfo;
-  });
-
-  // Function to load prefill data after initialization
-  const loadPrefillData = (data: PrefillData) => {
-    if (data.basic) {
-      setBasicInfo(prev => ({
-        studyTitle: applyPrefillToField(prev.studyTitle, data.basic?.studyTitle),
-        piName: applyPrefillToField(prev.piName, data.basic?.piName),
-        college: applyPrefillToField(prev.college, data.basic?.college),
-        year: applyPrefillToField(prev.year, data.basic?.year),
-        grantCategory: applyPrefillToField(prev.grantCategory, data.basic?.grantCategory),
-        fundingSource: applyPrefillToField(prev.fundingSource, data.basic?.fundingSource),
-        statementOfPurpose: applyPrefillToField(prev.statementOfPurpose, data.basic?.statementOfPurpose),
-        background: applyPrefillToField(prev.background, data.basic?.background),
-      }));
-    }
-    
-    if (data.objectives) {
-      setObjectivesInfo(prev => ({
-        objectives: applyPrefillToField(prev.objectives, data.objectives?.objectives),
-        literatureReview: applyPrefillToField(prev.literatureReview, data.objectives?.literatureReview),
-      }));
-    }
-    
-    if (data.activities) {
-      setActivitiesInfo(prev => ({
-        methodology: applyPrefillToField(prev.methodology, data.activities?.methodology),
-        timeline: applyPrefillToField(prev.timeline, data.activities?.timeline),
-      }));
-    }
-    
-    if (data.outcomes) {
-      setOutcomesInfo(prev => ({
-        researchOutcomes: applyPrefillToField(prev.researchOutcomes, data.outcomes?.researchOutcomes),
-        impact: applyPrefillToField(prev.impact, data.outcomes?.impact),
-      }));
-    }
-    
-    if (data.budget) {
-      setBudgetInfo(prev => ({
-        budgetSummary: applyPrefillToField(prev.budgetSummary, data.budget?.budgetSummary),
-        budgetJustification: applyPrefillToField(prev.budgetJustification, data.budget?.budgetJustification),
-      }));
-    }
-    
-    if (data.students) {
-      setStudentsInfo(prev => ({
-        studentInvolvement: applyPrefillToField(prev.studentInvolvement, data.students?.studentInvolvement),
-        studentLearningOutcomes: applyPrefillToField(prev.studentLearningOutcomes, data.students?.studentLearningOutcomes),
-      }));
-    }
-    
-    if (data.references) {
-      setReferencesInfo(prev => ({
-        bibliography: applyPrefillToField(prev.bibliography, data.references?.bibliography),
-      }));
-    }
-    
-    toast({
-      title: "Form prefilled",
-      description: "Previous application data has been loaded",
-    });
-  };
+  const [objectivesInfo, setObjectivesInfo] = useState(initialObjectivesInfo);
+  const [activitiesInfo, setActivitiesInfo] = useState(initialActivitiesInfo);
+  const [outcomesInfo, setOutcomesInfo] = useState(initialOutcomesInfo);
+  const [budgetInfo, setBudgetInfo] = useState(initialBudgetInfo);
+  const [studentsInfo, setStudentsInfo] = useState(initialStudentsInfo);
+  const [referencesInfo, setReferencesInfo] = useState(initialReferencesInfo);
 
   // Application sections completion status
-  // Initial section status
   const [sectionStatus, setSectionStatus] = useState<ApplicationSections>(initialSections);
 
   // Progress calculation
@@ -971,9 +823,7 @@ export const ApplicationFormProvider: React.FC<{
     renderFieldError,
     isSaving,
     opportunityId,
-    opportunity,
-    prefillData,
-    loadPrefillData,
+    opportunity
   };
 
   return (
