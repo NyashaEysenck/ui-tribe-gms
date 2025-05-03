@@ -7,7 +7,7 @@ import AppRoutes from "@/AppRoutes";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/ui-tribe-gms">
       <AuthProvider>
         <AppRoutes />
         <Toaster />
