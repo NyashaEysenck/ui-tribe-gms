@@ -1,6 +1,7 @@
 
 import { createBrowserRouter } from "react-router-dom";
-import App from "@/App";
+import { useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 // Pages
 import HomePage from "@/pages/HomePage";
@@ -24,10 +25,21 @@ import ManageUsersPage from "@/pages/ManageUsersPage";
 import NotFound from "@/pages/NotFound";
 import PrivateRoute from "@/components/PrivateRoute";
 
+// Root component to handle auto-login
+const Root = () => {
+  const { autoLogin } = useAuth();
+  
+  useEffect(() => {
+    autoLogin();
+  }, [autoLogin]);
+  
+  return null;
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Root />,
     children: [
       {
         path: "/",
