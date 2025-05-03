@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -22,6 +21,7 @@ import ApplicationsListPage from "@/pages/ApplicationsListPage";
 import ApplicationDetailsPage from "@/pages/ApplicationDetailsPage";
 import CreateOpportunityPage from "@/pages/CreateOpportunityPage";
 import ManageUsersPage from "@/pages/ManageUsersPage";
+import HelpPage from "@/pages/HelpPage";
 import NotFound from "@/pages/NotFound";
 import PrivateRoute from "@/components/PrivateRoute";
 
@@ -37,6 +37,16 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      
+      {/* Help page accessible by all authenticated users */}
+      <Route 
+        path="/help" 
+        element={
+          <PrivateRoute allowedRoles={["researcher", "grant_office", "admin"]}>
+            <HelpPage />
+          </PrivateRoute>
+        }
+      />
       
       {/* Researcher routes */}
       <Route 
