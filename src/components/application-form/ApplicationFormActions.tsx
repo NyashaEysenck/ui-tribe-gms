@@ -32,10 +32,42 @@ const ApplicationFormActions: React.FC = () => {
       duration: 5000,
     });
     
-    // Redirect to opportunities page after submission
+    // Redirect to opportunities page after submission (on a short delay to allow toast to display)
     setTimeout(() => {
-      navigate("/opportunities");
+      navigate("/my-grants", { replace: true });
     }, 1500);
+  };
+
+  const handleNextSection = () => {
+    // Save the current tab status
+    handleNext();
+
+    // Navigate to the next tab based on the current active tab
+    switch(activeTab) {
+      case "basic":
+        setActiveTab("objectives");
+        break;
+      case "objectives":
+        setActiveTab("activities");
+        break;
+      case "activities":
+        setActiveTab("outcomes");
+        break;
+      case "outcomes":
+        setActiveTab("budget");
+        break;
+      case "budget":
+        setActiveTab("students");
+        break;
+      case "students":
+        setActiveTab("references");
+        break;
+      case "references":
+        // This is handled by the submit function
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -78,7 +110,7 @@ const ApplicationFormActions: React.FC = () => {
       <Button 
         type="button" 
         className="bg-red-600 hover:bg-red-700 flex items-center"
-        onClick={isLastSection ? handleSubmit : handleNext}
+        onClick={isLastSection ? handleSubmit : handleNextSection}
         disabled={isSaving}
       >
         {isLastSection ? (

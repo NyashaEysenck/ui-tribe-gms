@@ -16,6 +16,9 @@ const ApplicationProgressBar: React.FC<ApplicationProgressBarProps> = ({ progres
     return "bg-green-500";
   };
 
+  // Only render if we have valid progress data
+  if (!progress) return null;
+
   const progressColor = getProgressColor(progress.percentComplete);
 
   return (

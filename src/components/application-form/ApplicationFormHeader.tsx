@@ -3,13 +3,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { useApplicationForm } from "@/context/ApplicationFormContext";
+import ApplicationProgressBar from "@/components/ApplicationProgressBar";
 
 const ApplicationFormHeader: React.FC = () => {
-  const { opportunity, handleSaveProgress, isSaving } = useApplicationForm();
+  const { opportunity, handleSaveProgress, isSaving, applicationProgress } = useApplicationForm();
 
   return (
     <div className="mb-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-start mb-4">
         <div>
           <h1 className="text-2xl font-bold">AU Grant Application Form</h1>
           <p className="text-gray-600">
@@ -33,6 +34,11 @@ const ApplicationFormHeader: React.FC = () => {
           )}
         </Button>
       </div>
+      
+      {/* Single progress bar */}
+      {applicationProgress && (
+        <ApplicationProgressBar progress={applicationProgress} />
+      )}
     </div>
   );
 };
