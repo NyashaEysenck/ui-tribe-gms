@@ -31,7 +31,7 @@ interface AuthContextType {
   login: (email: string, password: string) => boolean;
   logout: () => void;
   isAuthenticated: boolean;
-  autoLogin: () => void; // Adding the missing autoLogin property
+  autoLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -48,18 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   
-  // Check for saved user on initial load
-  useEffect(() => {
-    const savedUser = localStorage.getItem("gms_user");
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        localStorage.removeItem("gms_user");
-      }
-    }
-  }, []);
-
   // Auto login function to check for saved user
   const autoLogin = () => {
     const savedUser = localStorage.getItem("gms_user");
@@ -71,6 +59,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   };
+  
+  // Check for saved user on initial load
+  useEffect(() => {
+    autoLogin();
+  }, []);
 
   const login = (email: string, password: string): boolean => {
     // Simple demo authentication
@@ -109,7 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         isAuthenticated: !!user,
-        autoLogin, // Include the autoLogin function in the context value
+        autoLogin,
       }}
     >
       {children}
