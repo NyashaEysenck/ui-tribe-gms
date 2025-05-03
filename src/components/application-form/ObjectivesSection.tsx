@@ -2,8 +2,7 @@
 import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import ApplicationSectionHeader from "@/components/ApplicationSectionHeader";
-import { useApplicationForm } from "@/context/ApplicationFormContext";
-import { sectionHelpText } from "@/context/ApplicationFormContext";
+import { useApplicationForm, sectionHelpText } from "@/context/application-form";
 
 const ObjectivesSection: React.FC = () => {
   const { 
