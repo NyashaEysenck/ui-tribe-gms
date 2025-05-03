@@ -22,7 +22,7 @@ import StudentsSection from "@/components/application-form/StudentsSection";
 import ReferencesSection from "@/components/application-form/ReferencesSection";
 
 const ApplicationFormContent = () => {
-  const { calculateProgress } = useApplicationForm();
+  const { activeTab, calculateProgress } = useApplicationForm();
   const progress = calculateProgress();
   
   return (
@@ -36,7 +36,7 @@ const ApplicationFormContent = () => {
             <ApplicationProgressBar progress={progress} />
           </div>
           
-          <Tabs defaultValue="basic">
+          <Tabs value={activeTab}>
             <ApplicationFormNavigation />
             
             {/* Tab contents */}
