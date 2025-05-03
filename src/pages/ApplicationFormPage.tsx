@@ -31,7 +31,7 @@ const ApplicationFormContent = () => {
         <CardContent className="p-6">
           <ApplicationFormHeader />
           
-          {/* Progress bar */}
+          {/* Single Progress bar */}
           <div className="mb-6">
             <ApplicationProgressBar progress={progress} />
           </div>

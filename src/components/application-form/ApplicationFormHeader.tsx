@@ -3,10 +3,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { useApplicationForm } from "@/context/ApplicationFormContext";
-import ApplicationProgressBar from "@/components/ApplicationProgressBar";
 
 const ApplicationFormHeader: React.FC = () => {
-  const { opportunity, handleSaveProgress, isSaving, applicationProgress } = useApplicationForm();
+  const { opportunity, handleSaveProgress, isSaving, calculateProgress } = useApplicationForm();
+  
+  // Calculate progress directly here instead of expecting it from context
+  const applicationProgress = calculateProgress();
 
   return (
     <div className="mb-6">
@@ -34,11 +36,6 @@ const ApplicationFormHeader: React.FC = () => {
           )}
         </Button>
       </div>
-      
-      {/* Single progress bar */}
-      {applicationProgress && (
-        <ApplicationProgressBar progress={applicationProgress} />
-      )}
     </div>
   );
 };
