@@ -61,3 +61,39 @@ export interface FormSectionProps {
   status: SectionStatus;
   helpText?: string;
 }
+
+export interface PrefillData {
+  basic?: {
+    studyTitle?: string;
+    piName?: string;
+    college?: string;
+    year?: string;
+    grantCategory?: string;
+    fundingSource?: string;
+    statementOfPurpose?: string;
+    background?: string;
+  };
+  objectives?: {
+    objectives?: string;
+    literatureReview?: string;
+  };
+  activities?: {
+    methodology?: string;
+    timeline?: string;
+  };
+  outcomes?: {
+    researchOutcomes?: string;
+    impact?: string;
+  };
+  budget?: {
+    budgetSummary?: string;
+    budgetJustification?: string;
+  };
+  students?: {
+    studentInvolvement?: string;
+    studentLearningOutcomes?: string;
+  };
+  references?: {
+    bibliography?: string;
+  };
+}
