@@ -1,6 +1,6 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
+import { AlertCircle } from "lucide-react";
 import { 
   ApplicationSections, 
   FormField, 
