@@ -336,7 +336,7 @@ export const ApplicationFormProvider: React.FC<{
       currentSection: activeTab,
       completedSections: completedSections,
       totalSections: totalSections,
-      percentage: Math.round((completedSections / totalSections) * 100)
+      percentComplete: Math.round((completedSections / totalSections) * 100)
     };
   };
   
