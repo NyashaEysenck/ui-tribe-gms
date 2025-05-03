@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,15 +15,22 @@ interface Grant {
   startDate: string;
   endDate: string;
   status: "draft" | "pending" | "active" | "completed" | "rejected";
+  submissionDate?: string; 
 }
 
 const MyGrantsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
+  const [grants, setGrants] = useState<Grant[]>([]);
   
-  // Mock grants data (empty for initial state)
-  const grants: Grant[] = [];
+  // Load grants from localStorage
+  useEffect(() => {
+    const storedGrants = localStorage.getItem('userGrants');
+    if (storedGrants) {
+      setGrants(JSON.parse(storedGrants));
+    }
+  }, []);
   
   // Filter grants based on active tab
   const filteredGrants = grants.filter(grant => {
@@ -77,6 +84,7 @@ const MyGrantsPage = () => {
                             <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Amount</th>
                             <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Dates</th>
                             <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Status</th>
+                            <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -96,6 +104,18 @@ const MyGrantsPage = () => {
                                 `}>
                                   {grant.status.charAt(0).toUpperCase() + grant.status.slice(1)}
                                 </span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    // In a real app, this would navigate to the grant details
+                                    console.log("View grant details", grant.id);
+                                  }}
+                                >
+                                  View
+                                </Button>
                               </td>
                             </tr>
                           ))}
