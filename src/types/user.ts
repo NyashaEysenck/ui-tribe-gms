@@ -30,7 +30,7 @@ export interface FormField {
   value: string;
   isRequired: boolean;
   isValid: boolean;
-  errorMessage?: string;
+  errorMessage: string; // Changed from optional to required
 }
 
 export interface ApplicationFormSection {
