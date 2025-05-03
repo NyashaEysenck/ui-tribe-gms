@@ -334,3 +334,362 @@ export const ApplicationFormProvider: React.FC<{
     
     return {
       currentSection: activeTab,
+      completedSections: completedSections,
+      totalSections: totalSections,
+      percentage: Math.round((completedSections / totalSections) * 100)
+    };
+  };
+  
+  // Section access control
+  const canAccessSection = (section: string): boolean => {
+    const sectionOrder = ["basic", "objectives", "activities", "outcomes", "budget", "students", "references"];
+    const currentIndex = sectionOrder.indexOf(activeTab);
+    const targetIndex = sectionOrder.indexOf(section);
+    
+    // Can always access current or previous sections
+    if (targetIndex <= currentIndex) return true;
+    
+    // Can access next section if current section is complete
+    if (targetIndex === currentIndex + 1) {
+      return sectionStatus[activeTab as keyof ApplicationSections].isComplete;
+    }
+    
+    // Cannot skip multiple sections ahead
+    return false;
+  };
+  
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setIsUserChangingTab(true);
+    setActiveTab(value);
+    setIsUserChangingTab(false);
+  };
+  
+  // Navigation handlers
+  const handleNext = () => {
+    const sectionOrder = ["basic", "objectives", "activities", "outcomes", "budget", "students", "references"];
+    const currentIndex = sectionOrder.indexOf(activeTab);
+    
+    // Validate current section
+    let isValid = false;
+    
+    switch (activeTab) {
+      case "basic":
+        isValid = validateBasicInfo();
+        break;
+      case "objectives":
+        isValid = validateObjectives();
+        break;
+      case "activities":
+        isValid = validateActivities();
+        break;
+      case "outcomes":
+        isValid = validateOutcomes();
+        break;
+      case "budget":
+        isValid = validateBudget();
+        break;
+      case "students":
+        isValid = validateStudents();
+        break;
+      case "references":
+        isValid = validateReferences();
+        break;
+    }
+    
+    // Update section status
+    setSectionStatus(prev => ({
+      ...prev,
+      [activeTab]: {
+        ...prev[activeTab as keyof ApplicationSections],
+        isComplete: isValid,
+      }
+    }));
+    
+    if (isValid && currentIndex < sectionOrder.length - 1) {
+      // Move to next tab
+      setActiveTab(sectionOrder[currentIndex + 1]);
+    } else if (isValid && activeTab === "references") {
+      // Submit the form
+      handleSubmitApplication();
+    } else {
+      // Show error for invalid section
+      toast({
+        title: "Section Incomplete",
+        description: "Please complete all required fields before proceeding.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  const handlePrevious = () => {
+    const sectionOrder = ["basic", "objectives", "activities", "outcomes", "budget", "students", "references"];
+    const currentIndex = sectionOrder.indexOf(activeTab);
+    
+    if (currentIndex > 0) {
+      setActiveTab(sectionOrder[currentIndex - 1]);
+    }
+  };
+  
+  const handleSaveProgress = () => {
+    setIsSaving(true);
+    
+    // Simulate saving data to API
+    setTimeout(() => {
+      toast({
+        title: "Progress Saved",
+        description: "Your application progress has been saved.",
+      });
+      setIsSaving(false);
+    }, 1000);
+  };
+  
+  const handleSubmitApplication = () => {
+    // Validate all sections one more time
+    const isBasicValid = validateBasicInfo();
+    const isObjectivesValid = validateObjectives();
+    const isActivitiesValid = validateActivities();
+    const isOutcomesValid = validateOutcomes();
+    const isBudgetValid = validateBudget();
+    const isStudentsValid = validateStudents();
+    const isReferencesValid = validateReferences();
+    
+    const allValid = isBasicValid && isObjectivesValid && isActivitiesValid && 
+                    isOutcomesValid && isBudgetValid && isStudentsValid && isReferencesValid;
+    
+    if (allValid) {
+      // Simulate API submission
+      setIsSaving(true);
+      
+      setTimeout(() => {
+        toast({
+          title: "Application Submitted",
+          description: "Your grant application has been successfully submitted.",
+        });
+        setIsSaving(false);
+      }, 1500);
+    } else {
+      toast({
+        title: "Cannot Submit",
+        description: "Please ensure all sections are completed before submitting.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Validation functions
+  const validateBasicInfo = () => {
+    // Check if all required fields are filled
+    return Object.values(basicInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  const validateObjectives = () => {
+    return Object.values(objectivesInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  const validateActivities = () => {
+    return Object.values(activitiesInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  const validateOutcomes = () => {
+    return Object.values(outcomesInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  const validateBudget = () => {
+    return Object.values(budgetInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  const validateStudents = () => {
+    return Object.values(studentsInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  const validateReferences = () => {
+    return Object.values(referencesInfo).every(field => !field.isRequired || field.value.trim() !== "");
+  };
+  
+  // Field change handlers
+  const handleBasicInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setBasicInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleObjectivesInfoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setObjectivesInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleActivitiesInfoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setActivitiesInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleOutcomesInfoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setOutcomesInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleBudgetInfoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setBudgetInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleStudentsInfoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setStudentsInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleReferencesInfoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setReferencesInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: value.trim() !== "",
+        errorMessage: value.trim() === "" ? "This field is required" : "",
+      }
+    }));
+  };
+  
+  const handleSelectChange = (name: string, value: string) => {
+    setBasicInfo(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name as keyof typeof prev],
+        value,
+        isValid: true,
+      }
+    }));
+  };
+  
+  // UI helper for field errors
+  const renderFieldError = (field: FormField) => {
+    if (!field.isValid) {
+      return (
+        <div className="text-red-500 text-sm mt-1 flex items-center">
+          <AlertCircle className="h-4 w-4 mr-1" />
+          <span>{field.errorMessage}</span>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <ApplicationFormContext.Provider
+      value={{
+        activeTab,
+        setActiveTab,
+        sectionStatus,
+        setSectionStatus,
+        basicInfo,
+        setBasicInfo,
+        objectivesInfo,
+        setObjectivesInfo,
+        activitiesInfo,
+        setActivitiesInfo,
+        outcomesInfo,
+        setOutcomesInfo,
+        budgetInfo,
+        setBudgetInfo,
+        studentsInfo,
+        setStudentsInfo,
+        referencesInfo,
+        setReferencesInfo,
+        handleTabChange,
+        handleNext,
+        handlePrevious,
+        handleSaveProgress,
+        canAccessSection,
+        calculateProgress,
+        prefillDemoData,
+        validateBasicInfo,
+        validateObjectives,
+        validateActivities,
+        validateOutcomes,
+        validateBudget,
+        validateStudents,
+        validateReferences,
+        handleBasicInfoChange,
+        handleObjectivesInfoChange,
+        handleActivitiesInfoChange,
+        handleOutcomesInfoChange,
+        handleBudgetInfoChange,
+        handleStudentsInfoChange,
+        handleReferencesInfoChange,
+        handleSelectChange,
+        renderFieldError,
+        isSaving,
+        opportunityId,
+        opportunity,
+      }}
+    >
+      {children}
+    </ApplicationFormContext.Provider>
+  );
+};
+
+export const useApplicationForm = () => {
+  const context = useContext(ApplicationFormContext);
+  
+  if (!context) {
+    throw new Error("useApplicationForm must be used within an ApplicationFormProvider");
+  }
+  
+  return context;
+};
