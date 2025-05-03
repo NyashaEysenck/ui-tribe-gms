@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import Logo from "@/components/Logo";
 
 const SuccessStory = ({ quote, author, department }: { quote: string; author: string; department: string }) => (
   <div className="p-6 bg-white rounded-lg shadow-sm">
@@ -76,7 +76,7 @@ const HomePage = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row items-center">
             <div className="mb-8 md:mb-0 md:mr-8">
-              <img src="/lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png" alt="Africa University Logo" className="w-32 h-auto" />
+              <Logo size="xl" withText={false} fullLogo={true} />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4">Research Grant Funding</h1>
@@ -91,6 +91,19 @@ const HomePage = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Full Logo Section */}
+      <section className="py-12 px-4 bg-white">
+        <div className="container mx-auto max-w-6xl text-center">
+          <h2 className="text-3xl font-bold mb-8">Africa University Research Grant Management System</h2>
+          <div className="flex justify-center mb-8">
+            <Logo size="xl" withText={true} fullLogo={true} />
+          </div>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            Supporting Africa University's mission to develop ethical leaders and institutions for Africa through teaching, research, and community service.
+          </p>
         </div>
       </section>
 

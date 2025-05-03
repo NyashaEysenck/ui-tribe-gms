@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import Logo from "@/components/Logo";
 import { 
   LogOut, 
   User, 
@@ -183,13 +184,14 @@ const RoleSidebar = () => {
     )}>
       {/* Logo */}
       <div className="p-4 flex items-center justify-center">
-        <img 
-          src="/lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png" 
-          alt="AU GMS" 
-          className="h-16 w-auto"
-        />
-        {!collapsed && (
-          <span className="ml-2 text-white text-xl font-bold">AU GMS</span>
+        {collapsed ? (
+          <img 
+            src="/lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png" 
+            alt="AU GMS" 
+            className="h-16 w-auto"
+          />
+        ) : (
+          <Logo size="lg" withText={true} fullLogo={true} />
         )}
       </div>
 
