@@ -7,6 +7,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import RoleSidebar from "@/components/RoleSidebar";
 import { ApplicationFormProvider, useApplicationForm } from "@/context/ApplicationFormContext";
+import ApplicationProgressBar from "@/components/ApplicationProgressBar";
 
 // Import form components
 import ApplicationFormHeader from "@/components/application-form/ApplicationFormHeader";
@@ -37,12 +38,20 @@ const PrefillButton = () => {
 };
 
 const ApplicationFormContent = () => {
+  const { calculateProgress } = useApplicationForm();
+  const progress = calculateProgress();
+  
   return (
     <div className="p-8 relative">
       <Card>
         <CardContent className="p-6">
           <PrefillButton />
           <ApplicationFormHeader />
+          
+          {/* Add progress bar */}
+          <div className="mb-6">
+            <ApplicationProgressBar progress={progress} />
+          </div>
           
           <Tabs defaultValue="basic">
             <ApplicationFormNavigation />

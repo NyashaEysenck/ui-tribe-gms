@@ -8,7 +8,15 @@ import { ApplicationSections } from "@/types/user";
 
 const ApplicationFormActions: React.FC = () => {
   const navigate = useNavigate();
-  const { activeTab, handlePrevious, handleNext, sectionStatus } = useApplicationForm();
+  const { 
+    activeTab, 
+    handlePrevious, 
+    handleNext, 
+    sectionStatus,
+    opportunityId
+  } = useApplicationForm();
+
+  const isLastSection = activeTab === "references";
 
   return (
     <div className="flex justify-between mt-8">
@@ -47,7 +55,7 @@ const ApplicationFormActions: React.FC = () => {
         className="bg-red-600 hover:bg-red-700 flex items-center"
         onClick={handleNext}
       >
-        {activeTab === "references" ? "Submit Application" : (
+        {isLastSection ? "Submit Application" : (
           <>
             Next <ArrowRight className="ml-1 h-4 w-4" />
           </>
