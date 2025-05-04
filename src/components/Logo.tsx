@@ -5,9 +5,15 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   withText?: boolean;
   fullLogo?: boolean;
+  className?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ size = 'md', withText = true, fullLogo = false }) => {
+const Logo: React.FC<LogoProps> = ({ 
+  size = 'md', 
+  withText = true, 
+  fullLogo = false,
+  className = '' 
+}) => {
   const sizeClasses = {
     sm: 'h-8',
     md: 'h-12',
@@ -15,16 +21,18 @@ const Logo: React.FC<LogoProps> = ({ size = 'md', withText = true, fullLogo = fa
     xl: 'h-24',
   };
 
-  // Use import.meta.env.BASE_URL to get the base URL for the application
+  // Use a cleaner logo path that references just the logo
   const logoPath = `${import.meta.env.BASE_URL}lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png`;
 
   return (
-    <div className="flex items-center">
-      <img 
-        src={logoPath}
-        alt="Africa University Logo" 
-        className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''}`}
-      />
+    <div className={`flex items-center ${className}`}>
+      <div className="relative">
+        <img 
+          src={logoPath}
+          alt="Africa University Logo" 
+          className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''}`}
+        />
+      </div>
       {withText && (
         <div className="ml-2">
           <span className={`font-bold ${size === 'xl' ? 'text-2xl' : size === 'lg' ? 'text-xl' : size === 'md' ? 'text-lg' : 'text-base'}`}>

@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 
 type SidebarItemProps = {
   icon: React.ReactNode;
@@ -37,12 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userName, userRole }) => {
     <div className="h-screen w-64 bg-red-600 flex flex-col">
       {/* Logo */}
       <div className="p-4 flex items-center justify-center">
-        <img 
-          src="/lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png" 
-          alt="AU GMS" 
-          className="h-16 w-auto"
-        />
-        <span className="ml-2 text-white text-xl font-bold">AU GMS</span>
+        <Logo size="lg" withText={true} />
       </div>
 
       {/* Nav Icons */}
