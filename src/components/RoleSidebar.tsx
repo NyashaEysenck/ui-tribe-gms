@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -184,7 +185,7 @@ const RoleSidebar = () => {
       {/* Logo */}
       <div className="p-4 flex items-center justify-center">
         {collapsed ? (
-          <Logo size="md" withText={false} />
+          <Logo size="md" withText={false} variant="clean" />
         ) : (
           <Logo size="lg" withText={true} fullLogo={true} />
         )}

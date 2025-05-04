@@ -5,6 +5,7 @@ import RoleSidebar from "@/components/RoleSidebar";
 import { useAuth } from "@/context/AuthContext";
 import { BarChart2, Users, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
+import Logo from "@/components/Logo";
 
 type StatsCardProps = {
   title: string;
@@ -41,6 +42,9 @@ const AdminPage = () => {
             <div>
               <h1 className="text-2xl font-bold">Admin Dashboard</h1>
               <p className="text-gray-600">Welcome, {user?.name}</p>
+            </div>
+            <div className="hidden md:block">
+              <Logo size="md" variant="clean" withText={true} />
             </div>
           </div>
 

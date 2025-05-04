@@ -6,13 +6,15 @@ interface LogoProps {
   withText?: boolean;
   fullLogo?: boolean;
   className?: string;
+  variant?: 'default' | 'clean';
 }
 
 const Logo: React.FC<LogoProps> = ({ 
   size = 'md', 
   withText = true, 
   fullLogo = false,
-  className = '' 
+  className = '',
+  variant = 'default'
 }) => {
   const sizeClasses = {
     sm: 'h-8',
@@ -21,16 +23,21 @@ const Logo: React.FC<LogoProps> = ({
     xl: 'h-24',
   };
 
-  // Use a cleaner logo path that references just the logo
-  const logoPath = `${import.meta.env.BASE_URL}lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png`;
+  // We'll continue using the existing logo path - this is the version with the screenshot
+  const defaultLogoPath = `${import.meta.env.BASE_URL}lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png`;
+  
+  // For the "clean" variant, we would use just the logo portion
+  // Since we don't have a separate clean version, we'll use the same image
+  // but with CSS to focus on just the logo portion
+  const logoPath = defaultLogoPath;
 
   return (
     <div className={`flex items-center ${className}`}>
-      <div className="relative">
+      <div className={`relative ${variant === 'clean' ? 'overflow-hidden' : ''}`}>
         <img 
           src={logoPath}
           alt="Africa University Logo" 
-          className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''}`}
+          className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''} ${variant === 'clean' ? 'scale-[1.2] object-cover' : ''}`}
         />
       </div>
       {withText && (
