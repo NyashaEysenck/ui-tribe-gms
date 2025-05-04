@@ -58,10 +58,15 @@ export const ApplicationFormProvider: React.FC<ApplicationFormProviderProps> = (
   opportunityId 
 }) => {
   const [opportunity, setOpportunity] = useState<Opportunity | null>(demoOpportunity);
-  const [application, setApplication] = useState<Application | null>({
-    ...initialApplication,
-    userId: user.id,
-    opportunityId: opportunityId || ''
+  const [application, setApplication] = useState<Application | null>(() => {
+    if (!user || !user.id) {
+      return null;
+    }
+    return {
+      ...initialApplication,
+      userId: user.id,
+      opportunityId: opportunityId || ''
+    };
   });
   const [activeTab, setActiveTab] = useState('basic');
   const [isSaving, setIsSaving] = useState(false);
