@@ -15,10 +15,13 @@ const Logo: React.FC<LogoProps> = ({ size = 'md', withText = true, fullLogo = fa
     xl: 'h-24',
   };
 
+  // Use import.meta.env.BASE_URL to get the base URL for the application
+  const logoPath = `${import.meta.env.BASE_URL}lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png`;
+
   return (
     <div className="flex items-center">
       <img 
-        src="/lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png" 
+        src={logoPath}
         alt="Africa University Logo" 
         className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''}`}
       />
