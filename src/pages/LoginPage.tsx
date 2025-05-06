@@ -47,7 +47,7 @@ const LoginPage = () => {
         <Card className="shadow-lg">
           <CardContent className="p-8">
             <div className="flex justify-center mb-6">
-              <Logo size="lg" variant="new" withText={false} />
+              <Logo size="lg" variant="clean" withText={false} />
             </div>
             
             <div className="text-center mb-6">

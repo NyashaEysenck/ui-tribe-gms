@@ -50,7 +50,7 @@ const RegisterPage = () => {
         <Card className="shadow-lg">
           <CardContent className="p-8">
             <div className="flex flex-col items-center mb-8">
-              <Logo size="lg" variant="new" withText={false} className="mb-4" />
+              <Logo size="lg" variant="clean" withText={false} className="mb-4" />
               <h1 className="text-2xl font-bold mb-2">Create an Account</h1>
               <p className="text-gray-600 text-sm">Register for a Grant Management System account</p>
             </div>

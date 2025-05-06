@@ -9,7 +9,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
       <div className="text-center max-w-3xl px-4">
         <div className="mb-8">
-          <Logo size="xl" variant="new" withText={false} />
+          <Logo size="xl" variant="clean" withText={false} />
         </div>
         
         <h1 className="text-4xl font-bold mb-4 text-red-600">Africa University</h1>

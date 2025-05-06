@@ -23,20 +23,19 @@ const Logo: React.FC<LogoProps> = ({
     xl: 'h-24',
   };
 
-  // We'll continue using the existing logo path - this is the version with the screenshot
+  // We'll continue using the existing logo paths
   const defaultLogoPath = `${import.meta.env.BASE_URL}lovable-uploads/b0f20013-323f-412c-afd3-b150af6bfbaf.png`;
-  
-  // For the "clean" variant, we would use just the logo portion
-  // Since we don't have a separate clean version, we'll use the same image
-  // but with CSS to focus on just the logo portion
-  
-  // For the new variant, we'll use the newly uploaded logo
   const newLogoPath = `${import.meta.env.BASE_URL}lovable-uploads/7495b097-c81a-4d08-8c19-ff1d6c13c54c.png`;
+  
+  // Add the newly uploaded Africa University logo
+  const auLogoPath = `${import.meta.env.BASE_URL}lovable-uploads/65a7b0d1-5821-42ca-98f7-29781aa643a2.png`;
   
   // Choose which logo to display based on the variant
   let logoPath = defaultLogoPath;
   if (variant === 'new') {
     logoPath = newLogoPath;
+  } else if (variant === 'clean') {
+    logoPath = auLogoPath;
   }
 
   return (
@@ -45,7 +44,7 @@ const Logo: React.FC<LogoProps> = ({
         <img 
           src={logoPath}
           alt="Africa University Logo" 
-          className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''} ${variant === 'clean' ? 'scale-[1.2] object-cover' : ''}`}
+          className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''} ${variant === 'clean' ? 'object-contain' : ''}`}
         />
       </div>
       {withText && variant !== 'new' && (

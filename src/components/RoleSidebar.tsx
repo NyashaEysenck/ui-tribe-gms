@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -187,7 +186,7 @@ const RoleSidebar = () => {
         {collapsed ? (
           <Logo size="md" withText={false} variant="clean" />
         ) : (
-          <Logo size="lg" withText={true} fullLogo={true} />
+          <Logo size="lg" withText={false} variant="clean" />
         )}
       </div>
 
