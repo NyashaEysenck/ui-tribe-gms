@@ -6,7 +6,7 @@ interface LogoProps {
   withText?: boolean;
   fullLogo?: boolean;
   className?: string;
-  variant?: 'default' | 'clean';
+  variant?: 'default' | 'clean' | 'new';
 }
 
 const Logo: React.FC<LogoProps> = ({ 
@@ -29,7 +29,15 @@ const Logo: React.FC<LogoProps> = ({
   // For the "clean" variant, we would use just the logo portion
   // Since we don't have a separate clean version, we'll use the same image
   // but with CSS to focus on just the logo portion
-  const logoPath = defaultLogoPath;
+  
+  // For the new variant, we'll use the newly uploaded logo
+  const newLogoPath = `${import.meta.env.BASE_URL}lovable-uploads/7495b097-c81a-4d08-8c19-ff1d6c13c54c.png`;
+  
+  // Choose which logo to display based on the variant
+  let logoPath = defaultLogoPath;
+  if (variant === 'new') {
+    logoPath = newLogoPath;
+  }
 
   return (
     <div className={`flex items-center ${className}`}>
@@ -40,7 +48,7 @@ const Logo: React.FC<LogoProps> = ({
           className={`${sizeClasses[size]} w-auto ${fullLogo ? 'object-contain' : ''} ${variant === 'clean' ? 'scale-[1.2] object-cover' : ''}`}
         />
       </div>
-      {withText && (
+      {withText && variant !== 'new' && (
         <div className="ml-2">
           <span className={`font-bold ${size === 'xl' ? 'text-2xl' : size === 'lg' ? 'text-xl' : size === 'md' ? 'text-lg' : 'text-base'}`}>
             AU GMS
